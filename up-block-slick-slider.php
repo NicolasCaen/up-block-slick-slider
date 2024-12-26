@@ -130,12 +130,29 @@ function up_block_slick_slider_render_callback($attributes, $content) {
     $objectFit = isset($attributes['objectFit']) ? $attributes['objectFit'] : 'cover';
     $usePostImages = !empty($attributes['usePostImages']);
     
-    // Début de la structure HTML commune (sans le bloc style)
+    // Début de la structure HTML commune
     $output = '<div class="wp-block-up-block-slick-slider alignfull" ' .
+        'data-dots="' . esc_attr($attributes['dots'] ?? true) . '" ' .
+        'data-arrows="' . esc_attr($attributes['arrows'] ?? true) . '" ' .
+        'data-infinite="' . esc_attr($attributes['infinite'] ?? true) . '" ' .
+        'data-autoplay="' . esc_attr($attributes['autoplay'] ?? true) . '" ' .
+        'data-autoplay-speed="' . esc_attr($attributes['autoplaySpeed'] ?? 3000) . '" ' .
+        'data-speed="' . esc_attr($attributes['speed'] ?? 500) . '" ' .
+        'data-adaptive-height="' . esc_attr($attributes['adaptiveHeight'] ?? true) . '" ' .
+        'data-fade="' . esc_attr($attributes['fade'] ?? false) . '" ' .
+        'data-pause-hover="' . esc_attr($attributes['pauseOnHover'] ?? true) . '" ' .
+        'data-slides-to-show="' . esc_attr($attributes['slidesToShow'] ?? 1) . '" ' .
+        'data-slides-to-show-tablet="' . esc_attr($attributes['slidesToShowTablet'] ?? 1) . '" ' .
+        'data-slides-to-show-mobile="' . esc_attr($attributes['slidesToShowMobile'] ?? 1) . '" ' .
+        'data-center-mode="' . esc_attr($attributes['centerMode'] ?? false) . '" ' .
+        'data-center-padding="' . esc_attr($attributes['centerPadding'] ?? '50px') . '" ' .
+        'data-center-padding-tablet="' . esc_attr($attributes['centerPaddingTablet'] ?? '40px') . '" ' .
+        'data-center-padding-mobile="' . esc_attr($attributes['centerPaddingMobile'] ?? '30px') . '" ' .
+        'data-use-post-images="' . esc_attr($usePostImages ? 'true' : 'false') . '" ' .
+        'data-use-fixed-height="' . esc_attr($attributes['useFixedHeight'] ?? false) . '" ' .
         'data-slide-height="' . esc_attr($slideHeight) . '" ' .
         'data-height-unit="' . esc_attr($heightUnit) . '" ' .
-        'data-object-fit="' . esc_attr($objectFit) . '" ' .
-        'data-use-post-images="' . esc_attr($usePostImages ? 'true' : 'false') . '">';
+        'data-object-fit="' . esc_attr($objectFit) . '">';
     
     $output .= '<div class="slider-container">';
     $output .= '<div class="slides-wrapper">';

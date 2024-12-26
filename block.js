@@ -383,9 +383,10 @@ registerBlockType('up/block-slick-slider', {
     save: function(props) {
         const { attributes } = props;
         const blockProps = useBlockProps.save({
-            className: `align${attributes.align || ''}`
+            className: `alignfull`
         });
         
+        // Tous les data attributes sur le conteneur principal
         const dataAttributes = {
             'data-dots': attributes.dots,
             'data-arrows': attributes.arrows,
@@ -411,20 +412,17 @@ registerBlockType('up/block-slick-slider', {
         };
         
         return createElement(
-            Fragment,
-            null,
+            'div',
+            {
+                ...blockProps,
+                ...dataAttributes
+            },
             createElement(
                 'div',
-                {
-                    ...blockProps,
-                    ...dataAttributes,
-                    className: `${blockProps.className} slider-container`
-                },
+                { className: 'slider-container' },
                 createElement(
                     'div',
-                    { 
-                        className: 'slides-wrapper'
-                    },
+                    { className: 'slides-wrapper' },
                     !attributes.usePostImages && createElement(InnerBlocks.Content)
                 )
             )
