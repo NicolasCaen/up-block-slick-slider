@@ -128,29 +128,25 @@ function up_block_slick_slider_render_callback($attributes, $content) {
     $slideHeight = isset($attributes['slideHeight']) ? $attributes['slideHeight'] : 400;
     $heightUnit = isset($attributes['heightUnit']) ? $attributes['heightUnit'] : 'px';
     $objectFit = isset($attributes['objectFit']) ? $attributes['objectFit'] : 'cover';
+    $usePostImages = !empty($attributes['usePostImages']);
     
-    // Ajouter le style inline pour la hauteur
-    $style = sprintf(
-        '<style>.wp-block-up-block-slick-slider[data-block-id="%s"] { --slide-height: %s%s; }</style>',
-        uniqid(),
-        esc_attr($slideHeight),
-        esc_attr($heightUnit)
-    );
+    // Début de la structure HTML commune (sans le bloc style)
+    $output = '<div class="wp-block-up-block-slick-slider alignfull" ' .
+        'data-slide-height="' . esc_attr($slideHeight) . '" ' .
+        'data-height-unit="' . esc_attr($heightUnit) . '" ' .
+        'data-object-fit="' . esc_attr($objectFit) . '" ' .
+        'data-use-post-images="' . esc_attr($usePostImages ? 'true' : 'false') . '">';
     
-    // Si l'attribut usePostImages est true, remplacer le contenu
+    $output .= '<div class="slider-container">';
+    $output .= '<div class="slides-wrapper">';
+
+    // Contenu différent selon usePostImages
     if (!empty($attributes['usePostImages'])) {
         $images = up_block_slick_slider_get_post_images();
         if (!empty($images)) {
-            $content = '<div class="wp-block-up-block-slick-slider" ' .
-                'data-slide-height="' . esc_attr($slideHeight) . '" ' .
-                'data-height-unit="' . esc_attr($heightUnit) . '" ' .
-                'data-object-fit="' . esc_attr($objectFit) . '">';
-            $content .= '<div class="slider-container">';
-            $content .= '<div class="slides-wrapper">';
-            
             foreach ($images as $image) {
-                $content .= '<div class="slide">';
-                $content .= sprintf(
+                $output .= '<div class="slide">';
+                $output .= sprintf(
                     '<img src="%s" alt="%s" width="%d" height="%d" />',
                     esc_url($image['url']),
                     esc_attr($image['alt']),
@@ -158,30 +154,23 @@ function up_block_slick_slider_render_callback($attributes, $content) {
                     esc_attr($image['height'])
                 );
                 if (!empty($image['caption'])) {
-                    $content .= sprintf(
+                    $output .= sprintf(
                         '<div class="slide-caption">%s</div>',
                         esc_html($image['caption'])
                     );
                 }
-                $content .= '</div>';
+                $output .= '</div>';
             }
-            
-            $content .= '</div></div></div>';
         }
     } else {
-        // Pour le contenu normal, ajouter les attributs data au conteneur existant
-        $content = preg_replace(
-            '/<div class="wp-block-up-block-slick-slider/',
-            '<div class="wp-block-up-block-slick-slider" ' .
-                'data-slide-height="' . esc_attr($slideHeight) . '" ' .
-                'data-height-unit="' . esc_attr($heightUnit) . '" ' .
-                'data-object-fit="' . esc_attr($objectFit) . '"',
-            $content,
-            1
-        );
+        // Pour le contenu normal, utiliser le contenu existant
+        $output .= $content;
     }
+
+    // Fermeture de la structure HTML commune
+    $output .= '</div></div></div>';
     
-    return $content;
+    return $output;
 }
 
 add_action('init', 'up_block_slick_slider_register_block');

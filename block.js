@@ -3,13 +3,6 @@ const { createElement, Fragment } = wp.element;
 const { InnerBlocks, useBlockProps, InspectorControls } = wp.blockEditor;
 const { Button, PanelBody, ToggleControl, RangeControl, SelectControl } = wp.components;
 
-// Ajout d'un style personnalisé pour les slides
-const slideStyles = `
-    .wp-block-up-block-slick-slider .slide {
-        height: var(--slide-height);
-    }
-`;
-
 registerBlockType('up/block-slick-slider', {
     title: 'UP Block Slick Slider',
     icon: 'images-alt2',
@@ -346,7 +339,6 @@ registerBlockType('up/block-slick-slider', {
         return createElement(
             Fragment,
             null,
-            createElement('style', null, slideStyles),
             inspectorControls,
             createElement(
                 'div',
@@ -421,7 +413,6 @@ registerBlockType('up/block-slick-slider', {
         return createElement(
             Fragment,
             null,
-            createElement('style', null, slideStyles),
             createElement(
                 'div',
                 {
