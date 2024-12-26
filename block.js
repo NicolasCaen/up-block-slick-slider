@@ -109,6 +109,18 @@ registerBlockType('up/block-slick-slider', {
         objectFit: {
             type: 'string',
             default: 'cover'
+        },
+        slideRatio: {
+            type: 'string',
+            default: 'original'
+        },
+        customRatioWidth: {
+            type: 'number',
+            default: 16
+        },
+        customRatioHeight: {
+            type: 'number',
+            default: 9
         }
     },
     
@@ -191,7 +203,45 @@ registerBlockType('up/block-slick-slider', {
                         { label: 'None (taille réelle)', value: 'none' }
                     ],
                     onChange: (value) => setAttributes({ objectFit: value })
-                })
+                }),
+                createElement(SelectControl, {
+                    label: 'Ratio des slides',
+                    value: attributes.slideRatio,
+                    options: [
+                        { label: 'Original (pas de ratio forcé)', value: 'original' },
+                        { label: '16:9', value: '16:9' },
+                        { label: '4:3', value: '4:3' },
+                        { label: '3:2', value: '3:2' },
+                        { label: '1:1', value: '1:1' },
+                        { label: '2:3', value: '2:3' },
+                        { label: '9:16', value: '9:16' },
+                        { label: 'Personnalisé', value: 'custom' }
+                    ],
+                    onChange: (value) => setAttributes({ slideRatio: value })
+                }),
+                attributes.slideRatio === 'custom' && createElement(
+                    'div',
+                    { style: { display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' } },
+                    [
+                        createElement(RangeControl, {
+                            label: 'Largeur',
+                            value: attributes.customRatioWidth,
+                            onChange: (value) => setAttributes({ customRatioWidth: value }),
+                            min: 1,
+                            max: 32,
+                            step: 1
+                        }),
+                        createElement('span', null, ':'),
+                        createElement(RangeControl, {
+                            label: 'Hauteur',
+                            value: attributes.customRatioHeight,
+                            onChange: (value) => setAttributes({ customRatioHeight: value }),
+                            min: 1,
+                            max: 32,
+                            step: 1
+                        })
+                    ]
+                )
             ),
             createElement(
                 PanelBody,
@@ -408,7 +458,10 @@ registerBlockType('up/block-slick-slider', {
             'data-use-fixed-height': attributes.useFixedHeight,
             'data-slide-height': attributes.slideHeight,
             'data-height-unit': attributes.heightUnit,
-            'data-object-fit': attributes.objectFit
+            'data-object-fit': attributes.objectFit,
+            'data-slide-ratio': attributes.slideRatio,
+            'data-custom-ratio-width': attributes.customRatioWidth,
+            'data-custom-ratio-height': attributes.customRatioHeight
         };
         
         return createElement(

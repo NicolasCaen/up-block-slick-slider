@@ -205,3 +205,48 @@
     margin: 0;
     font-style: italic;
 } 
+
+/* Styles pour les ratios */
+.wp-block-up-block-slick-slider[data-slide-ratio="16:9"] .slide {
+    aspect-ratio: 16/9;
+}
+
+.wp-block-up-block-slick-slider[data-slide-ratio="4:3"] .slide {
+    aspect-ratio: 4/3;
+}
+
+.wp-block-up-block-slick-slider[data-slide-ratio="3:2"] .slide {
+    aspect-ratio: 3/2;
+}
+
+.wp-block-up-block-slick-slider[data-slide-ratio="1:1"] .slide {
+    aspect-ratio: 1/1;
+}
+
+.wp-block-up-block-slick-slider[data-slide-ratio="2:3"] .slide {
+    aspect-ratio: 2/3;
+}
+
+.wp-block-up-block-slick-slider[data-slide-ratio="9:16"] .slide {
+    aspect-ratio: 9/16;
+}
+
+.wp-block-up-block-slick-slider[data-slide-ratio="custom"] .slide {
+    aspect-ratio: var(--custom-ratio);
+}
+
+/* Ne pas appliquer de ratio si original est sélectionné */
+.wp-block-up-block-slick-slider[data-slide-ratio="original"] .slide {
+    aspect-ratio: unset;
+    height: auto;
+}
+
+/* Ajuster les images en fonction du ratio */
+.wp-block-up-block-slick-slider:not([data-slide-ratio="original"]) .slide img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: var(--object-fit, cover);
+} 

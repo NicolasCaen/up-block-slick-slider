@@ -130,8 +130,22 @@ function up_block_slick_slider_render_callback($attributes, $content) {
     $objectFit = isset($attributes['objectFit']) ? $attributes['objectFit'] : 'cover';
     $usePostImages = !empty($attributes['usePostImages']);
     
+    // Calculer le ratio personnalisé si nécessaire
+    $customRatioWidth = isset($attributes['customRatioWidth']) ? $attributes['customRatioWidth'] : 16;
+    $customRatioHeight = isset($attributes['customRatioHeight']) ? $attributes['customRatioHeight'] : 9;
+    
+    // Ajouter le style pour le ratio personnalisé
+    $style = '';
+    if (isset($attributes['slideRatio']) && $attributes['slideRatio'] === 'custom') {
+        $style = sprintf(
+            '<style>.wp-block-up-block-slick-slider[data-slide-ratio="custom"] { --custom-ratio: %d/%d; }</style>',
+            esc_attr($customRatioWidth),
+            esc_attr($customRatioHeight)
+        );
+    }
+    
     // Début de la structure HTML commune
-    $output = '<div class="wp-block-up-block-slick-slider alignfull" ' .
+    $output = $style . '<div class="wp-block-up-block-slick-slider alignfull" ' .
         'data-dots="' . esc_attr($attributes['dots'] ?? true) . '" ' .
         'data-arrows="' . esc_attr($attributes['arrows'] ?? true) . '" ' .
         'data-infinite="' . esc_attr($attributes['infinite'] ?? true) . '" ' .
@@ -152,7 +166,10 @@ function up_block_slick_slider_render_callback($attributes, $content) {
         'data-use-fixed-height="' . esc_attr($attributes['useFixedHeight'] ?? false) . '" ' .
         'data-slide-height="' . esc_attr($slideHeight) . '" ' .
         'data-height-unit="' . esc_attr($heightUnit) . '" ' .
-        'data-object-fit="' . esc_attr($objectFit) . '">';
+        'data-object-fit="' . esc_attr($objectFit) . '" ' .
+        'data-slide-ratio="' . esc_attr($attributes['slideRatio'] ?? 'original') . '" ' .
+        'data-custom-ratio-width="' . esc_attr($customRatioWidth) . '" ' .
+        'data-custom-ratio-height="' . esc_attr($customRatioHeight) . '">';
     
     $output .= '<div class="slider-container">';
     $output .= '<div class="slides-wrapper">';
