@@ -74,6 +74,48 @@ registerBlockType('up/block-slick-slider', {
         pauseOnHover: {
             type: 'boolean',
             default: true
+        },
+        // Ajout de l'option pour le nombre de slides
+        slidesToShow: {
+            type: 'number',
+            default: 1
+        },
+        slidesToShowMobile: {
+            type: 'number',
+            default: 1
+        },
+        slidesToShowTablet: {
+            type: 'number',
+            default: 2
+        },
+        centerMode: {
+            type: 'boolean',
+            default: false
+        },
+        centerPadding: {
+            type: 'string',
+            default: '50px'
+        },
+        // Pour le centerPadding responsive
+        centerPaddingTablet: {
+            type: 'string',
+            default: '40px'
+        },
+        centerPaddingMobile: {
+            type: 'string',
+            default: '30px'
+        },
+        usePostImages: {
+            type: 'boolean',
+            default: false
+        },
+        useFixedHeight: {
+            type: 'boolean',
+            default: false
+        },
+        objectFit: {
+            type: 'string',
+            default: 'cover'
         }
     },
     
@@ -118,24 +160,44 @@ registerBlockType('up/block-slick-slider', {
                     title: 'Dimensions du Slider',
                     initialOpen: true
                 },
-                createElement(RangeControl, {
-                    label: 'Hauteur du slide',
-                    value: attributes.slideHeight,
-                    onChange: (value) => setAttributes({ slideHeight: value }),
-                    min: 0,
-                    max: 1000,
-                    step: 10
+                createElement(ToggleControl, {
+                    label: 'Utiliser une hauteur fixe',
+                    checked: attributes.useFixedHeight,
+                    onChange: (value) => setAttributes({ useFixedHeight: value })
                 }),
+                attributes.useFixedHeight && createElement(
+                    Fragment,
+                    null,
+                    createElement(RangeControl, {
+                        label: 'Hauteur du slide',
+                        value: attributes.slideHeight,
+                        onChange: (value) => setAttributes({ slideHeight: value }),
+                        min: 0,
+                        max: 1000,
+                        step: 10
+                    }),
+                    createElement(SelectControl, {
+                        label: 'Unité de mesure',
+                        value: attributes.heightUnit,
+                        options: [
+                            { label: 'Pixels (px)', value: 'px' },
+                            { label: 'Viewport Height (vh)', value: 'vh' },
+                            { label: 'Pourcentage (%)', value: '%' },
+                            { label: 'REM', value: 'rem' }
+                        ],
+                        onChange: (value) => setAttributes({ heightUnit: value })
+                    })
+                ),
                 createElement(SelectControl, {
-                    label: 'Unité de mesure',
-                    value: attributes.heightUnit,
+                    label: 'Ajustement des images',
+                    value: attributes.objectFit,
                     options: [
-                        { label: 'Pixels (px)', value: 'px' },
-                        { label: 'Viewport Height (vh)', value: 'vh' },
-                        { label: 'Pourcentage (%)', value: '%' },
-                        { label: 'REM', value: 'rem' }
+                        { label: 'Cover (remplir)', value: 'cover' },
+                        { label: 'Contain (contenir)', value: 'contain' },
+                        { label: 'Fill (étirer)', value: 'fill' },
+                        { label: 'None (taille réelle)', value: 'none' }
                     ],
-                    onChange: (value) => setAttributes({ heightUnit: value })
+                    onChange: (value) => setAttributes({ objectFit: value })
                 })
             ),
             createElement(
@@ -194,7 +256,90 @@ registerBlockType('up/block-slick-slider', {
                     label: 'Pause au survol',
                     checked: attributes.pauseOnHover,
                     onChange: (value) => setAttributes({ pauseOnHover: value })
+                }),
+                createElement(ToggleControl, {
+                    label: 'Utiliser les images du post',
+                    help: attributes.usePostImages
+                        ? "Les images du post seront utilisées comme slides"
+                        : "Utiliser les slides personnalisés",
+                    checked: attributes.usePostImages,
+                    onChange: (value) => setAttributes({ usePostImages: value })
                 })
+            ),
+            createElement(
+                PanelBody,
+                {
+                    title: 'Affichage des slides',
+                    initialOpen: true
+                },
+                createElement(RangeControl, {
+                    label: 'Nombre de slides visibles (Desktop)',
+                    value: attributes.slidesToShow,
+                    onChange: (value) => setAttributes({ slidesToShow: value }),
+                    min: 1,
+                    max: 6,
+                    step: 1
+                }),
+                createElement(RangeControl, {
+                    label: 'Nombre de slides visibles (Tablet)',
+                    value: attributes.slidesToShowTablet,
+                    onChange: (value) => setAttributes({ slidesToShowTablet: value }),
+                    min: 1,
+                    max: 4,
+                    step: 1
+                }),
+                createElement(RangeControl, {
+                    label: 'Nombre de slides visibles (Mobile)',
+                    value: attributes.slidesToShowMobile,
+                    onChange: (value) => setAttributes({ slidesToShowMobile: value }),
+                    min: 1,
+                    max: 2,
+                    step: 1
+                })
+            ),
+            createElement(
+                PanelBody,
+                {
+                    title: 'Mode Centré',
+                    initialOpen: true
+                },
+                createElement(ToggleControl, {
+                    label: 'Activer le mode centré',
+                    checked: attributes.centerMode,
+                    onChange: (value) => setAttributes({ centerMode: value })
+                }),
+                attributes.centerMode && createElement(
+                    Fragment,
+                    null,
+                    createElement('p', {}, 'Espacement central (ex: 50px, 10%)'),
+                    createElement('div', { style: { marginBottom: '1em' } },
+                        createElement('label', {}, 'Desktop'),
+                        createElement('input', {
+                            type: 'text',
+                            value: attributes.centerPadding,
+                            onChange: (e) => setAttributes({ centerPadding: e.target.value }),
+                            style: { width: '100%' }
+                        })
+                    ),
+                    createElement('div', { style: { marginBottom: '1em' } },
+                        createElement('label', {}, 'Tablet'),
+                        createElement('input', {
+                            type: 'text',
+                            value: attributes.centerPaddingTablet,
+                            onChange: (e) => setAttributes({ centerPaddingTablet: e.target.value }),
+                            style: { width: '100%' }
+                        })
+                    ),
+                    createElement('div', { style: { marginBottom: '1em' } },
+                        createElement('label', {}, 'Mobile'),
+                        createElement('input', {
+                            type: 'text',
+                            value: attributes.centerPaddingMobile,
+                            onChange: (e) => setAttributes({ centerPaddingMobile: e.target.value }),
+                            style: { width: '100%' }
+                        })
+                    )
+                )
             )
         );
 
@@ -209,7 +354,7 @@ registerBlockType('up/block-slick-slider', {
                     ...blockProps,
                     className: `${blockProps.className} slider-container`
                 },
-                createElement(
+                !attributes.usePostImages && createElement(
                     'div',
                     { 
                         className: 'slides-wrapper'
@@ -221,7 +366,7 @@ registerBlockType('up/block-slick-slider', {
                         renderAppender: false
                     })
                 ),
-                createElement(
+                !attributes.usePostImages && createElement(
                     Button,
                     {
                         isPrimary: true,
@@ -229,6 +374,15 @@ registerBlockType('up/block-slick-slider', {
                         className: 'add-slide-button'
                     },
                     'Ajouter un slide'
+                ),
+                attributes.usePostImages && createElement(
+                    'div',
+                    { className: 'slides-wrapper post-images-placeholder' },
+                    createElement(
+                        'p',
+                        { className: 'post-images-notice' },
+                        'Les images du post seront affichées ici sur le front-end'
+                    )
                 )
             )
         );
@@ -237,10 +391,7 @@ registerBlockType('up/block-slick-slider', {
     save: function(props) {
         const { attributes } = props;
         const blockProps = useBlockProps.save({
-            className: `align${attributes.align || ''}`,
-            style: {
-                '--slide-height': `${attributes.slideHeight}${attributes.heightUnit}`
-            }
+            className: `align${attributes.align || ''}`
         });
         
         const dataAttributes = {
@@ -252,7 +403,19 @@ registerBlockType('up/block-slick-slider', {
             'data-speed': attributes.speed,
             'data-adaptive-height': attributes.adaptiveHeight,
             'data-fade': attributes.fade,
-            'data-pause-hover': attributes.pauseOnHover
+            'data-pause-hover': attributes.pauseOnHover,
+            'data-slides-to-show': attributes.slidesToShow,
+            'data-slides-to-show-tablet': attributes.slidesToShowTablet,
+            'data-slides-to-show-mobile': attributes.slidesToShowMobile,
+            'data-center-mode': attributes.centerMode,
+            'data-center-padding': attributes.centerPadding,
+            'data-center-padding-tablet': attributes.centerPaddingTablet,
+            'data-center-padding-mobile': attributes.centerPaddingMobile,
+            'data-use-post-images': attributes.usePostImages,
+            'data-use-fixed-height': attributes.useFixedHeight,
+            'data-slide-height': attributes.slideHeight,
+            'data-height-unit': attributes.heightUnit,
+            'data-object-fit': attributes.objectFit
         };
         
         return createElement(
@@ -271,7 +434,7 @@ registerBlockType('up/block-slick-slider', {
                     { 
                         className: 'slides-wrapper'
                     },
-                    createElement(InnerBlocks.Content)
+                    !attributes.usePostImages && createElement(InnerBlocks.Content)
                 )
             )
         );
