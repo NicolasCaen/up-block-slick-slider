@@ -19,19 +19,30 @@ jQuery(document).ready(function($) {
             centerPadding: $container.data('center-padding') || '50px',
             prevArrow: upSliderOptions.arrow_prev_html,
             nextArrow: upSliderOptions.arrow_next_html,
+            swipe: true,
+            swipeToSlide: true,
+            touchThreshold: 10,
+            touchMove: true,
+            draggable: true,
             responsive: [
                 {
                     breakpoint: 1024,
                     settings: {
                         slidesToShow: parseInt($container.data('slides-to-show-tablet')) || 1,
-                        centerPadding: $container.data('center-padding-tablet') || '40px'
+                        centerPadding: $container.data('center-padding-tablet') || '40px',
+                        swipe: true,
+                        swipeToSlide: true,
+                        touchThreshold: 10
                     }
                 },
                 {
                     breakpoint: 480,
                     settings: {
                         slidesToShow: parseInt($container.data('slides-to-show-mobile')) || 1,
-                        centerPadding: $container.data('center-padding-mobile') || '30px'
+                        centerPadding: $container.data('center-padding-mobile') || '30px',
+                        swipe: true,
+                        swipeToSlide: true,
+                        touchThreshold: 10
                     }
                 }
             ]
